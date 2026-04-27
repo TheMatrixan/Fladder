@@ -22,30 +22,61 @@ class DashboardNotifier extends StateNotifier<HomeModel> {
 
   late final JellyService api = ref.read(jellyApiProvider);
 
-  Future<void> fetchNextUpAndResume() async {
-    if (state.loading) return;
+  final imagesToFetch = {
+    ImageType.logo,
+    ImageType.primary,
+    ImageType.backdrop,
+    ImageType.banner,
+  }.toList();
+
+  final fieldsToFetch = {
+    ItemFields.parentid,
+    ItemFields.mediastreams,
+    ItemFields.mediasources,
+    ItemFields.candelete,
+    ItemFields.candownload,
+    ItemFields.primaryimageaspectratio,
+    ItemFields.overview,
+    ItemFields.airtime,
+  };
+
+  Future<void> fetchData() async {
+    if (state.loading) {
+      return;
+    }
     state = state.copyWith(loading: true);
+
+    await fetchRecommendations();
+    await fetchNextUpAndResume();
+
+    state = state.copyWith(loading: false);
+  }
+
+  Future<void> fetchRecommendations() async {
+    final limit = 50;
+
+    final recommendationsResponse = await api.itemsGet(
+      fields: fieldsToFetch.toList(),
+      limit: limit,
+      recursive: true,
+      enableImageTypes: imagesToFetch,
+      includeItemTypes: [BaseItemKind.video, BaseItemKind.series, BaseItemKind.movie],
+      sortBy: [ItemSortBy.random],
+      enableTotalRecordCount: false,
+      imageTypeLimit: 1,
+    );
+
+    final recommendations = recommendationsResponse.body?.items ?? [];
+
+    state = state.copyWith(
+      recommendations: recommendations,
+    );
+  }
+
+  Future<void> fetchNextUpAndResume() async {
     final viewTypes =
         ref.read(viewsProvider.select((value) => value.dashboardViews)).map((e) => e.collectionType).toSet().toList();
     final limit = 16;
-
-    final imagesToFetch = {
-      ImageType.logo,
-      ImageType.primary,
-      ImageType.backdrop,
-      ImageType.banner,
-    }.toList();
-
-    final fieldsToFetch = {
-      ItemFields.parentid,
-      ItemFields.mediastreams,
-      ItemFields.mediasources,
-      ItemFields.candelete,
-      ItemFields.candownload,
-      ItemFields.primaryimageaspectratio,
-      ItemFields.overview,
-      ItemFields.airtime,
-    };
 
     if (viewTypes.containsAny([CollectionType.livetv])) {
       List<ChannelModel> channels = (await api.liveTvChannelsGet(limit: limit))
@@ -126,7 +157,7 @@ class DashboardNotifier extends StateNotifier<HomeModel> {
             .toList() ??
         [];
 
-    state = state.copyWith(nextUp: next, loading: false);
+    state = state.copyWith(nextUp: next);
   }
 
   void clear() {

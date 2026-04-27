@@ -8,6 +8,7 @@ class HomeModel {
   final List<ItemBaseModel> resumeBooks;
   final List<ItemBaseModel> activePrograms;
   final List<ItemBaseModel> nextUp;
+  final List<ItemBaseModel> recommendations;
 
   HomeModel({
     this.loading = false,
@@ -16,6 +17,7 @@ class HomeModel {
     this.resumeBooks = const [],
     this.activePrograms = const [],
     this.nextUp = const [],
+    this.recommendations = const [],
   });
 
   HomeModel copyWith({
@@ -26,6 +28,7 @@ class HomeModel {
     List<ItemBaseModel>? activePrograms,
     List<ItemBaseModel>? nextUp,
     List<ItemBaseModel>? nextUpBooks,
+    List<ItemBaseModel>? recommendations,
   }) {
     return HomeModel(
       loading: loading ?? this.loading,
@@ -34,6 +37,7 @@ class HomeModel {
       resumeBooks: resumeBooks ?? this.resumeBooks,
       activePrograms: activePrograms ?? this.activePrograms,
       nextUp: nextUp ?? this.nextUp,
+      recommendations: recommendations ?? this.recommendations,
     );
   }
 }

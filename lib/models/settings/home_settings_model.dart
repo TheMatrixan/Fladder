@@ -16,8 +16,8 @@ abstract class HomeSettingsModel with _$HomeSettingsModel {
   factory HomeSettingsModel({
     @Default({...LayoutMode.values}) Set<LayoutMode> screenLayouts,
     @Default({...ViewSize.values}) Set<ViewSize> layoutStates,
-    @Default(HomeBanner.carousel) HomeBanner homeBanner,
-    @Default(HomeCarouselSettings.combined) HomeCarouselSettings carouselSettings,
+    @Default(HomeBanner.banner) HomeBanner homeBanner,
+    @Default(HomeCarouselSettings.recommendations) HomeCarouselSettings carouselSettings,
     @Default(HomeNextUp.separate) HomeNextUp nextUp,
   }) = _HomeSettingsModel;
 
@@ -68,6 +68,7 @@ enum HomeCarouselSettings {
   nextUp,
   cont,
   combined,
+  recommendations,
   ;
 
   const HomeCarouselSettings();
@@ -76,6 +77,7 @@ enum HomeCarouselSettings {
         HomeCarouselSettings.nextUp => context.localized.nextUp,
         HomeCarouselSettings.cont => context.localized.settingsContinue,
         HomeCarouselSettings.combined => context.localized.combined,
+        HomeCarouselSettings.recommendations => context.localized.recommendations,
       };
 }
 

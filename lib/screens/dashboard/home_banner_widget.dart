@@ -11,12 +11,14 @@ import 'package:fladder/screens/shared/media/media_banner.dart';
 import 'package:fladder/screens/shared/media/tv_slider_banner.dart';
 
 class HomeBannerWidget extends ConsumerWidget {
-  final List<ItemBaseModel> posters;
+  final List<ItemBaseModel> items;
   final Function(ItemBaseModel selected) onSelect;
+  final HomeCarouselSettings carouselType;
 
   const HomeBannerWidget({
-    required this.posters,
+    required this.items,
     required this.onSelect,
+    required this.carouselType,
     super.key,
   });
 
@@ -30,7 +32,7 @@ class HomeBannerWidget extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             CarouselBanner(
-              items: posters,
+              items: items,
               maxHeight: maxHeight,
             ),
             const SizedBox(height: 24)
@@ -39,16 +41,17 @@ class HomeBannerWidget extends ConsumerWidget {
       HomeBanner.banner => Padding(
           padding: const EdgeInsets.symmetric(horizontal: 6),
           child: MediaBanner(
-            items: posters,
+            items: items,
             maxHeight: maxHeight,
           ),
         ),
       HomeBanner.detailedBanner => DetailedBanner(
-          posters: posters,
+          items: items,
           onSelect: onSelect,
+          carouselType: carouselType,
         ),
       HomeBanner.tvSliderBanner => TVSliderBanner(
-          items: posters,
+          items: items,
           onSelect: onSelect,
           maxHeight: maxHeight,
         ),

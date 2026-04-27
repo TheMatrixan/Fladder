@@ -54,6 +54,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _refreshHome();
+    });
     _timer = Timer.periodic(const Duration(seconds: 120), (timer) {
       _refreshIndicatorKey.currentState?.show();
     });
@@ -67,9 +70,11 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
   Future<void> _refreshHome() async {
     if (mounted) {
-      await ref.read(userProvider.notifier).updateInformation();
-      await ref.read(viewsProvider.notifier).fetchViews();
-      await ref.read(dashboardProvider.notifier).fetchNextUpAndResume();
+      await Future.wait([
+        ref.read(userProvider.notifier).updateInformation(),
+        ref.read(viewsProvider.notifier).fetchViews(),
+        ref.read(dashboardProvider.notifier).fetchData(),
+      ]);
     }
   }
 
@@ -85,6 +90,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     final resumeAudio = dashboardData.resumeAudio;
     final resumeBooks = dashboardData.resumeBooks;
     final tvChannels = dashboardData.activePrograms;
+    final recommendations = dashboardData.recommendations;
 
     final allResume = [...resumeVideo, ...resumeAudio, ...resumeBooks].toList();
 
@@ -92,6 +98,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       HomeCarouselSettings.nextUp => dashboardData.nextUp,
       HomeCarouselSettings.combined => [...allResume, ...dashboardData.nextUp],
       HomeCarouselSettings.cont => allResume,
+      HomeCarouselSettings.recommendations => recommendations,
     };
 
     final viewSize = AdaptiveLayout.viewSizeOf(context);
@@ -140,8 +147,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                       horizontalPadding: 0,
                     ),
                     child: HomeBannerWidget(
-                      posters: homeCarouselItems,
+                      items: homeCarouselItems,
                       onSelect: (poster) => selectedPoster.value = poster,
+                      carouselType: homeSettings.carouselSettings,
                     ),
                   ),
                 ),

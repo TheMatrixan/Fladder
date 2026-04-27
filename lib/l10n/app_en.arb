@@ -709,6 +709,8 @@
       }
     }
   },
+  "recommendations": "Recommendations",
+  "@recommendations": {},
   "recursive": "Recursive",
   "@recursive": {},
   "refresh": "Refresh",

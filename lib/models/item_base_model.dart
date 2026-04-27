@@ -151,7 +151,7 @@ class ItemBaseModel with ItemBaseModelMappable {
   double get progress => userData.progress;
 
   String playButtonLabel(AppLocalizations l10n) =>
-      progress != 0 ? l10n.resume(name.maxLength()) : l10n.play(name.maxLength());
+      (progress != 0 ? l10n.resume(name.maxLength()) : l10n.play(name.maxLength())).trim();
 
   Widget get detailScreenWidget {
     switch (this) {

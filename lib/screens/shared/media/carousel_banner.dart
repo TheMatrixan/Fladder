@@ -21,6 +21,7 @@ class CarouselBanner extends ConsumerStatefulWidget {
   final PageController? controller;
   final List<ItemBaseModel> items;
   final double maxHeight;
+
   const CarouselBanner({
     this.controller,
     required this.items,
